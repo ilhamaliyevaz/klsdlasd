@@ -4,12 +4,15 @@
 
 'use strict';
 
-const WA_NUMBER = '994XXXXXXXX';
+const WA_NUMBER = '994555056722';
 const PAGE_SCROLL_MAP = {};
 let currentPage = 'home';
 let currentModalProduct = null;
 let currentVacancy = null;
 let activeFilter = 'all';
+
+// ─── CART STATE ────────────────────────────────
+let cart = []; // [{id, name, categoryLabel, img, qty, price}]
 
 // ─── PRODUCTS DATA ─────────────────────────────
 
@@ -22,7 +25,8 @@ const productsData = [
     category: 'salfetka',
     categoryLabel: 'Salfetka',
     img: 'https://www.genspark.ai/api/files/s/qWLrdvym',
-    badge: 'Dəst'
+    badge: 'Dəst',
+    price: null
   },
   {
     id: 'p2',
@@ -31,7 +35,8 @@ const productsData = [
     category: 'salfetka',
     categoryLabel: 'Salfetka',
     img: 'https://www.genspark.ai/api/files/s/qWLrdvym',
-    badge: null
+    badge: null,
+    price: null
   },
   // KİMYƏVİ MƏHSULLAR
   {
@@ -41,7 +46,8 @@ const productsData = [
     category: 'kimyevi',
     categoryLabel: 'Kimyəvi Məhsullar',
     img: 'https://www.genspark.ai/api/files/s/KMWWqHB2',
-    badge: 'Professional'
+    badge: 'Professional',
+    price: null
   },
   {
     id: 'p4',
@@ -50,7 +56,8 @@ const productsData = [
     category: 'kimyevi',
     categoryLabel: 'Kimyəvi Məhsullar',
     img: 'https://www.genspark.ai/api/files/s/KMWWqHB2',
-    badge: 'Universal'
+    badge: 'Universal',
+    price: null
   },
   {
     id: 'p5',
@@ -59,7 +66,8 @@ const productsData = [
     category: 'kimyevi',
     categoryLabel: 'Kimyəvi Məhsullar',
     img: 'https://www.genspark.ai/api/files/s/KMWWqHB2',
-    badge: null
+    badge: null,
+    price: null
   },
   {
     id: 'p6',
@@ -68,7 +76,8 @@ const productsData = [
     category: 'kimyevi',
     categoryLabel: 'Kimyəvi Məhsullar',
     img: 'https://www.genspark.ai/api/files/s/KMWWqHB2',
-    badge: null
+    badge: null,
+    price: null
   },
   // TƏMİZLİK LƏVAZİMATLARI
   {
@@ -78,7 +87,8 @@ const productsData = [
     category: 'levazimati',
     categoryLabel: 'Təmizlik Ləvazimatları',
     img: 'https://www.genspark.ai/api/files/s/W9v5Gr1k',
-    badge: '4 Rəng'
+    badge: '4 Rəng',
+    price: null
   },
   {
     id: 'p8',
@@ -87,7 +97,8 @@ const productsData = [
     category: 'levazimati',
     categoryLabel: 'Təmizlik Ləvazimatları',
     img: 'https://www.genspark.ai/api/files/s/LEGr2DwY',
-    badge: 'Professional'
+    badge: 'Professional',
+    price: null
   },
   {
     id: 'p9',
@@ -96,7 +107,8 @@ const productsData = [
     category: 'levazimati',
     categoryLabel: 'Təmizlik Ləvazimatları',
     img: 'https://www.genspark.ai/api/files/s/j7ISbtYe',
-    badge: 'Rəngli'
+    badge: 'Rəngli',
+    price: null
   },
   {
     id: 'p10',
@@ -105,7 +117,8 @@ const productsData = [
     category: 'levazimati',
     categoryLabel: 'Təmizlik Ləvazimatları',
     img: 'https://www.genspark.ai/api/files/s/vU6XDrzT',
-    badge: null
+    badge: null,
+    price: null
   },
   // DEZİNFEKSİYA
   {
@@ -115,7 +128,8 @@ const productsData = [
     category: 'dezinfeksiya',
     categoryLabel: 'Dezinfeksiya',
     img: 'https://www.genspark.ai/api/files/s/KMWWqHB2',
-    badge: 'Antiseptik'
+    badge: 'Antiseptik',
+    price: null
   },
   {
     id: 'p12',
@@ -124,7 +138,8 @@ const productsData = [
     category: 'dezinfeksiya',
     categoryLabel: 'Dezinfeksiya',
     img: 'https://www.genspark.ai/api/files/s/KMWWqHB2',
-    badge: null
+    badge: null,
+    price: null
   },
   // ƏL GİGİYENASI
   {
@@ -134,7 +149,8 @@ const productsData = [
     category: 'gigiyena',
     categoryLabel: 'Əl Gigiyenası',
     img: 'https://www.genspark.ai/api/files/s/iSiMaF8a',
-    badge: '100 əd.'
+    badge: '100 əd.',
+    price: null
   },
   {
     id: 'p14',
@@ -143,7 +159,8 @@ const productsData = [
     category: 'gigiyena',
     categoryLabel: 'Əl Gigiyenası',
     img: 'https://www.genspark.ai/api/files/s/KMWWqHB2',
-    badge: null
+    badge: null,
+    price: null
   }
 ];
 
@@ -244,7 +261,6 @@ function toggleMenu() {
 function filterProducts(filter) {
   activeFilter = filter;
 
-  // Update tab active state
   document.querySelectorAll('.filter-tab').forEach(tab => {
     tab.classList.toggle('active', tab.dataset.filter === filter);
   });
@@ -283,6 +299,10 @@ function renderProducts() {
       ? `<div class="product-card-badge">${escHtml(product.badge)}</div>`
       : '';
 
+    // Check if product is in cart
+    const cartItem = cart.find(c => c.id === product.id);
+    const inCart = !!cartItem;
+
     card.innerHTML = `
       <div class="product-card-img">
         ${badgeHtml}
@@ -295,8 +315,11 @@ function renderProducts() {
         <div class="product-card-desc">${escHtml(product.desc)}</div>
         <div class="product-card-footer">
           <button class="product-detail-btn" onclick="event.stopPropagation();openProductModal(productsData.find(p=>p.id==='${product.id}'))">Ətraflı</button>
-          <button class="product-wa-btn" onclick="event.stopPropagation();orderProductWA('${product.id}')" aria-label="WhatsApp ilə sifariş et" title="WhatsApp ilə sifariş et">
-            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          <button class="product-cart-btn ${inCart ? 'in-cart' : ''}" id="cart-btn-${product.id}" onclick="event.stopPropagation();addToCart('${product.id}')" aria-label="Səbətə əlavə et" title="Səbətə əlavə et">
+            ${inCart
+              ? `<svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`
+              : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="16" height="16"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>`
+            }
           </button>
         </div>
       </div>
@@ -308,10 +331,169 @@ function renderProducts() {
   });
 }
 
-function orderProductWA(productId) {
+// ─── CART FUNCTIONS ────────────────────────────
+
+function addToCart(productId) {
   const product = productsData.find(p => p.id === productId);
   if (!product) return;
-  const msg = `🛒 *Sifariş — Saff Təharət*\n\n📦 *Məhsul:* ${product.name}\n📂 *Kateqoriya:* ${product.categoryLabel}\n\nSalam! Bu məhsulu sifariş etmək istəyirəm. Zəhmət olmasa məlumat verin.`;
+
+  const existing = cart.find(c => c.id === productId);
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cart.push({
+      id: product.id,
+      name: product.name,
+      categoryLabel: product.categoryLabel,
+      img: product.img,
+      qty: 1,
+      price: product.price
+    });
+  }
+
+  updateCartBadge();
+  renderProducts(); // refresh to update cart button state
+  showToast(`"${product.name}" səbətə əlavə edildi 🛒`);
+}
+
+function addToCartFromModal() {
+  if (!currentModalProduct) return;
+  addToCart(currentModalProduct.id);
+  closeProductModalBtn();
+  openCart();
+}
+
+function removeFromCart(productId) {
+  cart = cart.filter(c => c.id !== productId);
+  updateCartBadge();
+  renderCartSidebar();
+  renderProducts();
+}
+
+function changeQty(productId, delta) {
+  const item = cart.find(c => c.id === productId);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) {
+    removeFromCart(productId);
+    return;
+  }
+  updateCartBadge();
+  renderCartSidebar();
+}
+
+function updateCartBadge() {
+  const total = cart.reduce((sum, c) => sum + c.qty, 0);
+  const badge = document.getElementById('cartBadge');
+  const mobileBadge = document.getElementById('mobileCartCount');
+  if (badge) {
+    badge.textContent = total;
+    badge.classList.toggle('has-items', total > 0);
+  }
+  if (mobileBadge) mobileBadge.textContent = total;
+}
+
+function openCart() {
+  renderCartSidebar();
+  document.getElementById('cartSidebar').classList.add('open');
+  document.getElementById('cartOverlay').classList.add('visible');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCart() {
+  document.getElementById('cartSidebar').classList.remove('open');
+  document.getElementById('cartOverlay').classList.remove('visible');
+  document.body.style.overflow = '';
+}
+
+function renderCartSidebar() {
+  const body = document.getElementById('cartBody');
+  const footer = document.getElementById('cartFooter');
+  const totalEl = document.getElementById('cartTotal');
+  if (!body) return;
+
+  if (cart.length === 0) {
+    body.innerHTML = `
+      <div class="cart-empty">
+        <div class="cart-empty-icon">🛒</div>
+        <p class="cart-empty-text">Səbətiniz boşdur</p>
+        <p class="cart-empty-sub">Məhsullar səhifəsinə keçib məhsul əlavə edin</p>
+        <button class="cart-go-products-btn" onclick="closeCart();showPage('products')">
+          Məhsullara Bax
+        </button>
+      </div>
+    `;
+    if (footer) footer.style.display = 'none';
+    return;
+  }
+
+  if (footer) footer.style.display = 'flex';
+
+  body.innerHTML = cart.map(item => `
+    <div class="cart-item" id="cart-item-${item.id}">
+      <div class="cart-item-img-wrap">
+        <img src="${item.img}" alt="${escHtml(item.name)}" class="cart-item-img"
+          onerror="this.src='images/logo.png';this.style.objectFit='contain';this.style.padding='6px'" />
+      </div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${escHtml(item.name)}</div>
+        <div class="cart-item-cat">${escHtml(item.categoryLabel)}</div>
+        ${item.price ? `<div class="cart-item-price">${(item.price * item.qty).toFixed(2)} ₼</div>` : '<div class="cart-item-price-inquiry">Qiymət soruşulacaq</div>'}
+      </div>
+      <div class="cart-item-controls">
+        <div class="cart-qty-row">
+          <button class="cart-qty-btn" onclick="changeQty('${item.id}', -1)" aria-label="Azalt">−</button>
+          <span class="cart-qty-val">${item.qty}</span>
+          <button class="cart-qty-btn" onclick="changeQty('${item.id}', 1)" aria-label="Artır">+</button>
+        </div>
+        <button class="cart-remove-btn" onclick="removeFromCart('${item.id}')" aria-label="Sil">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        </button>
+      </div>
+    </div>
+  `).join('');
+
+  // Calculate total
+  const hasAllPrices = cart.every(c => c.price !== null);
+  const totalItems = cart.reduce((sum, c) => sum + c.qty, 0);
+
+  if (hasAllPrices) {
+    const totalPrice = cart.reduce((sum, c) => sum + (c.price || 0) * c.qty, 0);
+    if (totalEl) totalEl.textContent = `${totalPrice.toFixed(2)} ₼`;
+  } else {
+    if (totalEl) totalEl.textContent = `${totalItems} məhsul`;
+  }
+}
+
+function orderViaWhatsApp() {
+  if (cart.length === 0) return;
+
+  let msg = `🛒 *Sifariş — Saff Təharət*\n\n`;
+  msg += `📋 *Sifariş Siyahısı:*\n`;
+  msg += `━━━━━━━━━━━━━━━━━━━━\n`;
+
+  cart.forEach((item, i) => {
+    msg += `\n${i + 1}. 📦 *${item.name}*\n`;
+    msg += `   📂 Kateqoriya: ${item.categoryLabel}\n`;
+    msg += `   🔢 Miqdar: ${item.qty} ədəd\n`;
+    if (item.price) {
+      msg += `   💰 Qiymət: ${(item.price * item.qty).toFixed(2)} ₼\n`;
+    }
+  });
+
+  msg += `\n━━━━━━━━━━━━━━━━━━━━\n`;
+
+  const hasAllPrices = cart.every(c => c.price !== null);
+  if (hasAllPrices) {
+    const total = cart.reduce((sum, c) => sum + (c.price || 0) * c.qty, 0);
+    msg += `💵 *Ümumi: ${total.toFixed(2)} ₼*\n`;
+  } else {
+    const totalItems = cart.reduce((sum, c) => sum + c.qty, 0);
+    msg += `🔢 *Cəmi ${totalItems} ədəd məhsul*\n`;
+  }
+
+  msg += `\nZəhmət olmasa bu sifariş haqqında məlumat verin.`;
+
   window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
 }
 
@@ -331,13 +513,6 @@ function openProductModal(product) {
   document.getElementById('modalCategoryTag').textContent = product.categoryLabel;
   document.getElementById('productModal').classList.add('open');
   document.body.style.overflow = 'hidden';
-}
-
-function contactForProduct() {
-  if (!currentModalProduct) return;
-  const p = currentModalProduct;
-  const msg = `🛒 *Sifariş — Saff Təharət*\n\n📦 *Məhsul:* ${p.name}\n📂 *Kateqoriya:* ${p.categoryLabel}\n\nSalam! Bu məhsulu sifariş etmək istəyirəm. Zəhmət olmasa məlumat verin.`;
-  window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
 }
 
 function closeProductModal(e) {
@@ -438,7 +613,9 @@ function escHtml(str) {
 
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
-    if (document.getElementById('productModal').classList.contains('open')) {
+    if (document.getElementById('cartSidebar').classList.contains('open')) {
+      closeCart();
+    } else if (document.getElementById('productModal').classList.contains('open')) {
       closeProductModalBtn();
     } else if (document.getElementById('vacancyModal').classList.contains('open')) {
       closeVacancyModalBtn();
@@ -453,4 +630,5 @@ document.addEventListener('keydown', function(e) {
 document.addEventListener('DOMContentLoaded', function() {
   renderProducts();
   renderVacancies();
+  updateCartBadge();
 });
