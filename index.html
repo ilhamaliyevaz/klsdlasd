@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="description" content="Sushi Katana - Bakıda ən yaxşı suşi restoran. Online sifariş, çatdırılma." />
+  <title>Sushi Katana</title>
+  <link rel="icon" type="image/png" href="images/logo.png" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<header class="header" id="header">
+  <div class="header-inner">
+    <div class="logo-wrap" onclick="showPage('home')">
+      <img src="images/logo.png" alt="Sushi Katana Logo" class="logo-img" />
+    </div>
+    <nav class="nav-links" id="navLinks">
+      <a href="#" onclick="showPage('home');return false;" class="nav-link active" data-page="home">Ana Səhifə</a>
+      <a href="#" onclick="showPage('menu');return false;" class="nav-link" data-page="menu">Menyu</a>
+      <a href="#" onclick="showPage('gallery');return false;" class="nav-link" data-page="gallery">Qalerya</a>
+      <a href="#" onclick="showPage('reservation');return false;" class="nav-link" data-page="reservation">Rezervasiya</a>
+      <a href="#" onclick="showPage('faq');return false;" class="nav-link" data-page="faq">FAQ</a>
+      <a href="#" onclick="showPage('vacancies');return false;" class="nav-link" data-page="vacancies">Vakansiyalar</a>
+    </nav>
+    <div class="header-right">
+      <button class="cart-btn" onclick="toggleCart()" aria-label="Səbət">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+      <button class="burger" id="burger" onclick="toggleMenu()" aria-label="Menü">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ===== MOBILE MENU OVERLAY ===== -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" onclick="toggleMenu()">✕</button>
+  <a href="#" onclick="showPage('home');toggleMenu();return false;">Ana Səhifə</a>
+  <a href="#" onclick="showPage('menu');toggleMenu();return false;">Menyu</a>
+  <a href="#" onclick="showPage('gallery');toggleMenu();return false;">Qalerya</a>
+  <a href="#" onclick="showPage('reservation');toggleMenu();return false;">Rezervasiya</a>
+  <a href="#" onclick="showPage('faq');toggleMenu();return false;">FAQ</a>
+  <a href="#" onclick="showPage('vacancies');toggleMenu();return false;">Vakansiyalar</a>
+</div>
+<div class="mobile-overlay" id="mobileOverlay" onclick="toggleMenu()"></div>
+
+<!-- ===== CART PANEL ===== -->
+<div class="cart-panel" id="cartPanel">
+  <div class="cart-header">
+    <h2>Səbət</h2>
+    <button onclick="toggleCart()" class="cart-close-btn">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty" id="cartEmpty">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      <p>Səbət boşdur</p>
+    </div>
+  </div>
+  <div class="cart-footer" id="cartFooter" style="display:none;">
+    <div class="cart-total">
+      <span>Cəmi:</span>
+      <span id="cartTotal">0 AZN</span>
+    </div>
+    <button class="order-btn" onclick="sendOrder()">Sifariş et (WhatsApp)</button>
+  </div>
+</div>
+<div class="cart-backdrop" id="cartBackdrop" onclick="toggleCart()"></div>
+
+<!-- ===== PAGES WRAPPER ===== -->
+<main id="pagesRoot">
+
+  <!-- HOME PAGE -->
+  <section class="page active" id="page-home">
+    <!-- Hero -->
+    <div class="hero">
+      <div class="hero-content">
+        <img src="images/logo.png" alt="Sushi Katana" class="hero-logo" />
+        <h1 class="hero-title">Sushi Katana</h1>
+        <p class="hero-subtitle">Bakının ən yaxşı suşi restoranı — Təzə, dadlı, sürətli çatdırılma</p>
+        <div class="hero-btns">
+          <button class="btn-primary" onclick="showPage('menu')">Menyuya Bax</button>
+          <button class="btn-secondary" onclick="showPage('reservation')">Rezervasiya</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- About -->
+    <section class="section" id="about">
+      <div class="container">
+        <h2 class="section-title">Haqqımızda</h2>
+        <div class="about-grid">
+          <div class="about-text">
+            <p>Sushi Katana — Bakıda premium keyfiyyətli Yapon mətbəxinin ünvanı. Biz hər sushini ustalıq, sənətkarlıq və ürəklə hazırlayırıq.</p>
+            <p>Təzə ingredientlər, sürətli çatdırılma və sərfəli qiymətlər ilə müştərilərimizi xoşbəxt etmək bizim hədəfimizdir.</p>
+            <div class="about-stats">
+              <div class="stat"><span class="stat-num">500+</span><span class="stat-label">Gündəlik Sifariş</span></div>
+              <div class="stat"><span class="stat-num">50+</span><span class="stat-label">Menyu Maddəsi</span></div>
+              <div class="stat"><span class="stat-num">4.9★</span><span class="stat-label">Ortalama Reytinq</span></div>
+            </div>
+          </div>
+          <div class="about-img-wrap">
+            <img src="images/gallery1.jpg" alt="Sushi Katana Restoranı" class="about-img" loading="lazy" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Working Hours -->
+    <section class="section section-dark" id="hours">
+      <div class="container">
+        <h2 class="section-title light">İş Saatları</h2>
+        <div class="hours-grid">
+          <div class="hours-card">
+            <div class="hours-icon">🕐</div>
+            <h3>Bazar ertəsi – Cümə</h3>
+            <p class="hours-time">10:00 – 23:00</p>
+          </div>
+          <div class="hours-card">
+            <div class="hours-icon">🕐</div>
+            <h3>Şənbə</h3>
+            <p class="hours-time">10:00 – 24:00</p>
+          </div>
+          <div class="hours-card">
+            <div class="hours-icon">🕐</div>
+            <h3>Bazar</h3>
+            <p class="hours-time">11:00 – 23:00</p>
+          </div>
+          <div class="hours-card highlight">
+            <div class="hours-icon">🚀</div>
+            <h3>Çatdırılma</h3>
+            <p class="hours-time">30–60 dəq</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="section" id="contact">
+      <div class="container">
+        <h2 class="section-title">Əlaqə</h2>
+        <div class="contact-grid">
+          <a href="https://wa.me/994559406018" target="_blank" rel="noopener" class="contact-card">
+            <div class="contact-icon wa-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            </div>
+            <div class="contact-info">
+              <span class="contact-label">WhatsApp</span>
+              <span class="contact-value">+994 55 940 60 18</span>
+            </div>
+          </a>
+          <a href="https://www.instagram.com/sushi.katana_baku/" target="_blank" rel="noopener" class="contact-card">
+            <div class="contact-icon ig-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </div>
+            <div class="contact-info">
+              <span class="contact-label">Instagram</span>
+              <span class="contact-value">@sushi.katana_baku</span>
+            </div>
+          </a>
+          <a href="https://www.google.com/maps/place/Bak%C4%B1/@40.3947365,49.6898016,32622m/data=!3m2!1e3!4b1!4m6!3m5!1s0x40307d6bd6211cf9:0x343f6b5e7ae56c6b!8m2!3d40.4092617!4d49.8670924!16zL20vMDFnZjU?entry=ttu&g_ep=EgoyMDI2MDcyOS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" class="contact-card">
+            <div class="contact-icon map-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><path d="M12 0C7.802 0 4 3.403 4 7.602 4 11.8 7.469 16.812 12 24c4.531-7.188 8-12.2 8-16.398C20 3.403 16.199 0 12 0zm0 11a3 3 0 110-6 3 3 0 010 6z"/></svg>
+            </div>
+            <div class="contact-info">
+              <span class="contact-label">Ünvan</span>
+              <span class="contact-value">Bakı, Azərbaycan</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <!-- MENU PAGE -->
+  <section class="page" id="page-menu">
+    <div class="page-header">
+      <button class="back-btn" onclick="goBack()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Geri
+      </button>
+      <h1 class="page-title">Menyu</h1>
+    </div>
+    <div class="container">
+      <!-- Menu Tabs -->
+      <div class="menu-tabs" id="menuTabs">
+        <button class="menu-tab active" onclick="switchTab('sets')" data-tab="sets">Setlər</button>
+        <button class="menu-tab" onclick="switchTab('rolls')" data-tab="rolls">Rolllar</button>
+        <button class="menu-tab" onclick="switchTab('nigiri')" data-tab="nigiri">Nigiri</button>
+        <button class="menu-tab" onclick="switchTab('maki')" data-tab="maki">Maki</button>
+        <button class="menu-tab" onclick="switchTab('drinks')" data-tab="drinks">İçkilər</button>
+      </div>
+
+      <!-- Sets Tab -->
+      <div class="menu-section active" id="tab-sets">
+        <div class="menu-grid" id="grid-sets"></div>
+      </div>
+      <!-- Rolls Tab -->
+      <div class="menu-section" id="tab-rolls">
+        <div class="menu-grid" id="grid-rolls"></div>
+      </div>
+      <!-- Nigiri Tab -->
+      <div class="menu-section" id="tab-nigiri">
+        <div class="menu-grid" id="grid-nigiri"></div>
+      </div>
+      <!-- Maki Tab -->
+      <div class="menu-section" id="tab-maki">
+        <div class="menu-grid" id="grid-maki"></div>
+      </div>
+      <!-- Drinks Tab -->
+      <div class="menu-section" id="tab-drinks">
+        <div class="menu-grid" id="grid-drinks"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY PAGE -->
+  <section class="page" id="page-gallery">
+    <div class="page-header">
+      <button class="back-btn" onclick="goBack()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Geri
+      </button>
+      <h1 class="page-title">Qalerya</h1>
+    </div>
+    <div class="container">
+      <div class="gallery-grid">
+        <div class="gallery-item">
+          <img src="images/gallery1.jpg" alt="Sushi Katana - Müştəri" loading="lazy" onclick="openLightbox(this)" />
+        </div>
+        <div class="gallery-item">
+          <img src="images/menu-hero.jpg" alt="Sushi Katana - Suşi Seçimi" loading="lazy" onclick="openLightbox(this)" />
+        </div>
+        <div class="gallery-item">
+          <img src="images/set-n3.jpg" alt="Sushi Katana - Set N3" loading="lazy" onclick="openLightbox(this)" />
+        </div>
+        <div class="gallery-item">
+          <img src="images/set-n1.jpg" alt="Sushi Katana - Set N1" loading="lazy" onclick="openLightbox(this)" />
+        </div>
+      </div>
+    </div>
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+      <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+      <img id="lightboxImg" src="" alt="" />
+    </div>
+  </section>
+
+  <!-- RESERVATION PAGE -->
+  <section class="page" id="page-reservation">
+    <div class="page-header">
+      <button class="back-btn" onclick="goBack()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Geri
+      </button>
+      <h1 class="page-title">Rezervasiya</h1>
+    </div>
+    <div class="container container-sm">
+      <div class="form-card">
+        <p class="form-subtitle">Masanızı əvvəlcədən rezerv edin, sizi gözləyəcəyik!</p>
+        <form id="reservationForm" onsubmit="submitReservation(event)">
+          <div class="form-group">
+            <label for="resName">Ad, Soyad *</label>
+            <input type="text" id="resName" placeholder="Adınızı daxil edin" required />
+          </div>
+          <div class="form-group">
+            <label for="resPhone">Telefon nömrəsi *</label>
+            <input type="tel" id="resPhone" placeholder="+994 xx xxx xx xx" required />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="resDate">Tarix *</label>
+              <input type="date" id="resDate" required />
+            </div>
+            <div class="form-group">
+              <label for="resTime">Saat *</label>
+              <input type="time" id="resTime" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="resGuests">Nəfər sayı *</label>
+            <select id="resGuests" required>
+              <option value="">Seçin...</option>
+              <option value="1">1 nəfər</option>
+              <option value="2">2 nəfər</option>
+              <option value="3">3 nəfər</option>
+              <option value="4">4 nəfər</option>
+              <option value="5">5 nəfər</option>
+              <option value="6+">6+ nəfər</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="resNote">Əlavə qeyd</label>
+            <textarea id="resNote" rows="3" placeholder="Xüsusi istəkləriniz varsa yazın..."></textarea>
+          </div>
+          <button type="submit" class="btn-primary full-width">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            WhatsApp ilə Göndər
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ PAGE -->
+  <section class="page" id="page-faq">
+    <div class="page-header">
+      <button class="back-btn" onclick="goBack()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Geri
+      </button>
+      <h1 class="page-title">Tez-tez Soruşulan Suallar</h1>
+    </div>
+    <div class="container container-sm">
+      <div class="faq-list" id="faqList"></div>
+    </div>
+  </section>
+
+  <!-- VACANCIES PAGE -->
+  <section class="page" id="page-vacancies">
+    <div class="page-header">
+      <button class="back-btn" onclick="goBack()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Geri
+      </button>
+      <h1 class="page-title">Vakansiyalar</h1>
+    </div>
+    <div class="container">
+      <p class="vacancy-intro">Sushi Katana ailəsinin bir üzvü olmaq istəyirsiniz? Komandamıza qoşulun!</p>
+      <div class="vacancy-grid" id="vacancyGrid"></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===== PRODUCT MODAL ===== -->
+<div class="modal-overlay" id="productModal" onclick="closeProductModal(event)">
+  <div class="modal-card" id="modalCard">
+    <button class="modal-close" onclick="closeProductModalBtn()">✕</button>
+    <img id="modalImg" src="" alt="" />
+    <div class="modal-body">
+      <h2 id="modalName"></h2>
+      <p id="modalDesc"></p>
+      <div class="modal-meta">
+        <span class="modal-price" id="modalPrice"></span>
+        <span class="modal-weight" id="modalWeight"></span>
+      </div>
+      <button class="btn-primary full-width" onclick="addToCartFromModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        Səbətə Əlavə Et
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== VACANCY MODAL ===== -->
+<div class="modal-overlay" id="vacancyModal" onclick="closeVacancyModal(event)">
+  <div class="modal-card vacancy-modal-card" id="vacancyModalCard">
+    <button class="modal-close" onclick="closeVacancyModalBtn()">✕</button>
+    <div class="modal-body">
+      <div class="vacancy-modal-icon" id="vacancyModalIcon"></div>
+      <h2 id="vacancyModalTitle"></h2>
+      <p class="vacancy-type" id="vacancyModalType"></p>
+      <div class="vacancy-details" id="vacancyModalDetails"></div>
+      <button class="btn-primary full-width" onclick="applyVacancy()">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp ilə Müraciət Et
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
