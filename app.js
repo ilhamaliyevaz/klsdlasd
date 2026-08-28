@@ -1,298 +1,198 @@
 /* =============================================
-   SUSHI KATANA — APP.JS
+   SAFF TƏHARƏT — APP.JS
    ============================================= */
 
 'use strict';
 
-// ─── Constants ───────────────────────────────
-const WA_NUMBER = '994559406018';
-const PAGE_SCROLL_MAP = {};   // page -> scrollY before leaving
+const WA_NUMBER = '994XXXXXXXX';
+const PAGE_SCROLL_MAP = {};
 let currentPage = 'home';
 let currentModalProduct = null;
 let currentVacancy = null;
-let cart = [];
+let activeFilter = 'all';
 
-// ─── DATA ─────────────────────────────────────
+// ─── PRODUCTS DATA ─────────────────────────────
 
-const menuData = {
-  sets: [
-    {
-      id: 's1',
-      name: 'Set N1 — Super Təklif',
-      desc: '70 əd. müxtəlif suşi + 1L Coca-Cola pulsuz! Böyük yığıncaqlar üçün ideal seçim.',
-      price: 29,
-      weight: '70 əd. + 1L Cola',
-      img: 'images/set-n1.jpg',
-      badge: 'Super Təklif'
-    },
-    {
-      id: 's2',
-      name: 'Set N3',
-      desc: '30 əd. müxtəlif suşi — California, Philadelphia, Hot Crab, Hot Salmon, Baked, Maki daxildir.',
-      price: 19,
-      weight: '30 əd.',
-      img: 'images/set-n3.jpg',
-      badge: 'Populyar'
-    },
-    {
-      id: 's3',
-      name: 'Sushi Premium Set',
-      desc: 'Klassik Nigiri, Maki, California Roll — hər şey bir yerdə. Suşi sevənlər üçün ideal set.',
-      price: 29,
-      weight: '6 növ, hər birindən',
-      img: 'images/menu-hero.jpg',
-      badge: 'Klassik'
-    }
-  ],
-  rolls: [
-    {
-      id: 'r1',
-      name: 'California Roll',
-      desc: 'Krab əti, avokado, salatalıq, tobiko kürüsü ilə hazırlanmış klassik uramaki roll.',
-      price: 8,
-      weight: '8 əd.',
-      img: 'images/menu-hero.jpg'
-    },
-    {
-      id: 'r2',
-      name: 'Philadelphia Roll',
-      desc: 'Krem pendir, somon, avokado ilə hazırlanmış zəngin dadlı uramaki roll.',
-      price: 9,
-      weight: '8 əd.',
-      img: 'images/gallery1.jpg'
-    },
-    {
-      id: 'r3',
-      name: 'Hot Crab Roll',
-      desc: 'İsti qızardılmış krab içlikli, xüsusi Katana sousu ilə servis edilən roll.',
-      price: 8,
-      weight: '8 əd.',
-      img: 'images/set-n3.jpg'
-    },
-    {
-      id: 'r4',
-      name: 'Hot Salmon Roll',
-      desc: 'Qızardılmış somon içlikli, wasabi mayonezi ilə servis edilən isti roll.',
-      price: 8,
-      weight: '8 əd.',
-      img: 'images/menu-hero.jpg'
-    },
-    {
-      id: 'r5',
-      name: 'Baked Roll',
-      desc: 'Fırında bişirilmiş, kremli pendir sousu ilə örtülmüş xüsusi Katana rollları.',
-      price: 9,
-      weight: '8 əd.',
-      img: 'images/gallery1.jpg'
-    },
-    {
-      id: 'r6',
-      name: 'Spicy Tuna Roll',
-      desc: 'Ədviyyatlı ton balığı, xiyar, sriracha mayonezi ilə hazırlanmış qızğın roll.',
-      price: 9,
-      weight: '8 əd.',
-      img: 'images/set-n3.jpg'
-    },
-    {
-      id: 'r7',
-      name: 'Dragon Roll',
-      desc: 'Karides tempura, avokado, unagi sousu ilə hazırlanmış vizual cəhətdən möhtəşəm roll.',
-      price: 11,
-      weight: '8 əd.',
-      img: 'images/menu-hero.jpg'
-    },
-    {
-      id: 'r8',
-      name: 'Rainbow Roll',
-      desc: 'Krab, avokado California rollu üzərinə somon, ton balığı, karides diləmləri ilə.',
-      price: 12,
-      weight: '8 əd.',
-      img: 'images/gallery1.jpg'
-    }
-  ],
-  nigiri: [
-    {
-      id: 'n1',
-      name: 'Somon Nigiri',
-      desc: 'Təzə Atlantik somonundan hazırlanmış, əl ilə yoğurulmuş pirinc üzərində nigiri.',
-      price: 5,
-      weight: '2 əd.',
-      img: 'images/menu-hero.jpg'
-    },
-    {
-      id: 'n2',
-      name: 'Ton Balığı Nigiri',
-      desc: 'Premium Bluefin ton balığından hazırlanmış, xüsusi mari sousu ilə servis.',
-      price: 6,
-      weight: '2 əd.',
-      img: 'images/menu-hero.jpg'
-    },
-    {
-      id: 'n3',
-      name: 'Karides Nigiri',
-      desc: 'Bişirilmiş böyük karides, pirinc üzərində incə nori ilə bağlanmış nigiri.',
-      price: 5,
-      weight: '2 əd.',
-      img: 'images/menu-hero.jpg'
-    },
-    {
-      id: 'n4',
-      name: 'Unagi Nigiri',
-      desc: 'Şirin-şor teriyaki sousu ilə şüyüdlənmiş tərəvəz balığı (unagi) nigiris.',
-      price: 7,
-      weight: '2 əd.',
-      img: 'images/menu-hero.jpg'
-    }
-  ],
-  maki: [
-    {
-      id: 'm1',
-      name: 'Maki Salmon',
-      desc: 'Təzə somon və nori dərinliyindən hazırlanmış sadə, lakin dadlı klassik maki rollları.',
-      price: 5,
-      weight: '10 əd.',
-      img: 'images/menu-hero.jpg'
-    },
-    {
-      id: 'm2',
-      name: 'Maki Ton Balığı',
-      desc: 'Premium ton balığı ilə hazırlanmış ənənəvi Yapon maki rollları.',
-      price: 5,
-      weight: '10 əd.',
-      img: 'images/menu-hero.jpg'
-    },
-    {
-      id: 'm3',
-      name: 'Maki Xiyar',
-      desc: 'Kappa maki — vegeterian seçimi, təzə xiyar ilə hazırlanmış yüngül maki rollları.',
-      price: 4,
-      weight: '10 əd.',
-      img: 'images/menu-hero.jpg'
-    },
-    {
-      id: 'm4',
-      name: 'Maki Avokado',
-      desc: 'Kremli avokado ilə hazırlanmış bitki əsaslı yüngül maki rollları.',
-      price: 4,
-      weight: '10 əd.',
-      img: 'images/menu-hero.jpg'
-    }
-  ],
-  drinks: [
-    {
-      id: 'd1',
-      name: 'Coca-Cola',
-      desc: 'Klassik Coca-Cola — suşi ilə mükəmməl cütlük.',
-      price: 2,
-      weight: '0.33L',
-      img: 'images/set-n1.jpg'
-    },
-    {
-      id: 'd2',
-      name: 'Coca-Cola 1L',
-      desc: 'Böyük Coca-Cola, setlər üçün ideal seçim.',
-      price: 4,
-      weight: '1L',
-      img: 'images/set-n1.jpg'
-    },
-    {
-      id: 'd3',
-      name: 'Yaşıl Çay',
-      desc: 'Ənənəvi Yapon yaşıl çayı — suşi ilə klassik kombinasiya.',
-      price: 3,
-      weight: '400ml',
-      img: 'images/menu-hero.jpg'
-    },
-    {
-      id: 'd4',
-      name: 'Miso Şorba',
-      desc: 'Ənənəvi Yapon miso şorbasıı, tofu və dəniz yosunu ilə.',
-      price: 4,
-      weight: '350ml',
-      img: 'images/menu-hero.jpg'
-    }
-  ]
-};
-
-const faqData = [
+const productsData = [
+  // SALFETKA
   {
-    q: 'Çatdırılma müddəti nə qədərdir?',
-    a: 'Bakı daxilindəki sifarişlər üçün ortalama çatdırılma müddəti 30-60 dəqiqədir. Sifariş verildikdən sonra kuryerimiz sizinlə əlaqə saxlayır.'
+    id: 'p1',
+    name: 'Kağız Dəsmal + Dispenser',
+    desc: 'Avtomatik Blue kağız dəsmal dispenseri + 2 ədəd kağız dəsmal rulosu. Ofis, restoran, ictimai binalar üçün ideal.',
+    category: 'salfetka',
+    categoryLabel: 'Salfetka',
+    img: 'https://www.genspark.ai/api/files/s/qWLrdvym',
+    badge: 'Dəst'
   },
   {
-    q: 'Minimum sifariş məbləği nədir?',
-    a: 'Minimum sifariş məbləği 10 AZN-dir. Çatdırılma xidmətimiz pulsuzdur (müəyyən rayonlar üçün şərtlər tətbiq oluna bilər).'
+    id: 'p2',
+    name: 'Kağız Dəsmal Rulosu',
+    desc: 'Yüksək keyfiyyətli kağız dəsmal rulosu. Xüsusi toxuma, yumşaq, davamlı material. Çoxlu rulo seçimi.',
+    category: 'salfetka',
+    categoryLabel: 'Salfetka',
+    img: 'https://www.genspark.ai/api/files/s/qWLrdvym',
+    badge: null
+  },
+  // KİMYƏVİ MƏHSULLAR
+  {
+    id: 'p3',
+    name: 'Professional Cleaner',
+    desc: 'Peşəkar universal təmizlik vasitəsi. Sürətli və effektiv təmizlik. Müxtəlif səthlər üçün uyğundur.',
+    category: 'kimyevi',
+    categoryLabel: 'Kimyəvi Məhsullar',
+    img: 'https://www.genspark.ai/api/files/s/KMWWqHB2',
+    badge: 'Professional'
   },
   {
-    q: 'Rezervasiya üçün depozit tələb olunurmu?',
-    a: 'Xeyr, rezervasiya tamamilə pulsuzdur. Masa saxlamaq üçün heç bir ödəniş tələb edilmir. Sadəcə gəlmədiyiniz halda xəbər verməyinizi rica edirik.'
+    id: 'p4',
+    name: 'Universal Təmizlik Vasitəsi',
+    desc: 'Universal çox məqsədli təmizlik məhsulu. Ev, ofis, sənaye sahələri üçün münasibdir.',
+    category: 'kimyevi',
+    categoryLabel: 'Kimyəvi Məhsullar',
+    img: 'https://www.genspark.ai/api/files/s/KMWWqHB2',
+    badge: 'Universal'
   },
   {
-    q: 'Allergenləri nəzərə alırsınızmı?',
-    a: 'Bəli, biz allergen məlumatlarını çox ciddi qəbul edirik. Sifarişinizi verərkən xüsusi diet tələblərinizi qeyd etdikdə aşpazımız uyğun hazırlayacaq.'
+    id: 'p5',
+    name: 'Xlor Məhlulu',
+    desc: 'Güclü dezinfeksiya və ağardıcı məhsul. Səthi dezinfeksiya etmək üçün ideal.',
+    category: 'kimyevi',
+    categoryLabel: 'Kimyəvi Məhsullar',
+    img: 'https://www.genspark.ai/api/files/s/KMWWqHB2',
+    badge: null
   },
   {
-    q: 'Ödəniş üsulları hansılardır?',
-    a: 'Nağd pul, bank kartı (Kapital Bank, ABB, PASHA Bank), ANSAN və onlayn ödəniş sistemləri qəbul edilir.'
+    id: 'p6',
+    name: 'Banyə Təmizlik Sprey',
+    desc: 'Vanna otağı üçün xüsusi spray. Daş kirəc, pas izlərini effektiv şəkildə aradan qaldırır.',
+    category: 'kimyevi',
+    categoryLabel: 'Kimyəvi Məhsullar',
+    img: 'https://www.genspark.ai/api/files/s/KMWWqHB2',
+    badge: null
+  },
+  // TƏMİZLİK LƏVAZİMATLARI
+  {
+    id: 'p7',
+    name: 'Mikrofibra Parça Dəsti',
+    desc: '4 rəngli mikrofibra parça dəsti (yaşıl, sarı, qırmızı, göy). Yüksək emilim, uzun ömürlü, maşında yuyula bilər.',
+    category: 'levazimati',
+    categoryLabel: 'Təmizlik Ləvazimatları',
+    img: 'https://www.genspark.ai/api/files/s/W9v5Gr1k',
+    badge: '4 Rəng'
   },
   {
-    q: 'Korporativ sifarişlər mümkündürmü?',
-    a: 'Bəli! Şirkətlər, tədbirlər və böyük qruplar üçün xüsusi korporativ menyu və endirim proqramlarımız mövcuddur. WhatsApp vasitəsilə bizimlə əlaqə saxlayın.'
+    id: 'p8',
+    name: 'Flat Mop Başlığı',
+    desc: 'Düz mop başlığı. Döşəmə yuma üçün ağ-qırmızı dönən mop başlığı. Bütün döşəmə növləri üçün uyğun.',
+    category: 'levazimati',
+    categoryLabel: 'Təmizlik Ləvazimatları',
+    img: 'https://www.genspark.ai/api/files/s/LEGr2DwY',
+    badge: 'Professional'
   },
   {
-    q: 'Qablaşdırma necədir? Eco-friendlydir?',
-    a: 'Biz ekoloji cəhətdən təmiz, geri dönüşümlü qablaşdırma materiallarından istifadə edirik. Soyuducu paketlər suşini çatdırılma zamanı ən təzə vəziyyətdə saxlayır.'
+    id: 'p9',
+    name: 'Chenille Mop Başlığı',
+    desc: 'Rəngli chenille mop başlıqları (mavi, çəhrayı, yaşıl, narıncı). Geniş sahəli, yüksək effektiv.',
+    category: 'levazimati',
+    categoryLabel: 'Təmizlik Ləvazimatları',
+    img: 'https://www.genspark.ai/api/files/s/j7ISbtYe',
+    badge: 'Rəngli'
   },
   {
-    q: 'Restoranın iş saatları necədir?',
-    a: 'B.E – Cümə: 10:00–23:00 | Şənbə: 10:00–24:00 | Bazar: 11:00–23:00. Çatdırılma xidməti restoran iş saatları daxilindədir.'
+    id: 'p10',
+    name: 'Sərfəli Film (Stretch Film)',
+    desc: 'Qablaşdırma üçün şəffaf stretch film rulosu. Möhkəm, uzanan, qoruyucu film.',
+    category: 'levazimati',
+    categoryLabel: 'Təmizlik Ləvazimatları',
+    img: 'https://www.genspark.ai/api/files/s/vU6XDrzT',
+    badge: null
+  },
+  // DEZİNFEKSİYA
+  {
+    id: 'p11',
+    name: 'Antiseptik Məhlul',
+    desc: 'Əl və səthlər üçün güclü antiseptik dezinfeksiya məhlulu. 70% spirt əsaslı, sürətli effekt.',
+    category: 'dezinfeksiya',
+    categoryLabel: 'Dezinfeksiya',
+    img: 'https://www.genspark.ai/api/files/s/KMWWqHB2',
+    badge: 'Antiseptik'
+  },
+  {
+    id: 'p12',
+    name: 'Dezinfeksiya Sprey',
+    desc: 'Səthlər üçün dezinfeksiya spreyi. Bakteriya, virus və göbələklərə qarşı effektiv. Əlverişli sprey qabı.',
+    category: 'dezinfeksiya',
+    categoryLabel: 'Dezinfeksiya',
+    img: 'https://www.genspark.ai/api/files/s/KMWWqHB2',
+    badge: null
+  },
+  // ƏL GİGİYENASI
+  {
+    id: 'p13',
+    name: 'Nitrile Əlcəklər (Qara)',
+    desc: 'Professional qara nitrile əlcəklər. Kimyəvi maddələrə davamlı, nazik, rahat geyim. 100 ədədlik qutu.',
+    category: 'gigiyena',
+    categoryLabel: 'Əl Gigiyenası',
+    img: 'https://www.genspark.ai/api/files/s/iSiMaF8a',
+    badge: '100 əd.'
+  },
+  {
+    id: 'p14',
+    name: 'Dispenser Sabun',
+    desc: 'Əl yuma üçün dispenser sabunu. Yumşaq formula, nəmləndirici, parfümlü. Böyük həcm.',
+    category: 'gigiyena',
+    categoryLabel: 'Əl Gigiyenası',
+    img: 'https://www.genspark.ai/api/files/s/KMWWqHB2',
+    badge: null
   }
 ];
+
+// ─── VACANCIES DATA ─────────────────────────────
 
 const vacanciesData = [
   {
     id: 'v1',
-    icon: '🍱',
-    title: 'Suşi Ustad (Itamae)',
+    icon: '🚚',
+    title: 'Kuryer / Çatdırılma Sürücüsü',
     type: 'Tam Ştat',
-    salary: '800 – 1200 AZN',
-    schedule: 'Dəyişən növbə (2/2)',
-    requirements: 'Ən az 1 il suşi hazırlama təcrübəsi, gigiyena sertifikatı',
-    desc: 'Katana mütbəxinə peşəkar suşi ustad axtarırıq. Kreativlik, dəqiqlik və komanda ruhu vacibdir.',
-    duties: 'Menyu maddələrinin hazırlanması, freshness nəzarəti, müştəri sifarişlərinin icrasını'
+    salary: '600 – 900 AZN',
+    schedule: 'Çevik qrafik, həftə içi',
+    requirements: 'Sürücülük vəsiqəsi (B kateqoriyası), Bakı ərazisinə bələdlik',
+    desc: 'Saff Təharət şirkəti üçün sürətli, etibarlı kuryer işə qəbul edirik. Öz nəqliyyatı olan üçün əlavə bonus.',
+    duties: 'Sifarişlərin vaxtında çatdırılması, müştəri ilə ünsiyyət, məhsulların qorunması'
   },
   {
     id: 'v2',
-    icon: '🛵',
-    title: 'Kuryer',
-    type: 'Yarım / Tam Ştat',
-    salary: '500 – 800 AZN + bonus',
-    schedule: 'Çevik qrafik',
-    requirements: 'Sürücülük vəsiqəsi (B kateqoriyası), Bakı ərazisinə bələdlik',
-    desc: 'Sürətli, etibarlı kuryer işə qəbul edirik. Öz nəqliyyatı olan üçün əlavə bonus nəzərdə tutulur.',
-    duties: 'Sifarişlərin vaxtında çatdırılması, müştəri ilə ünsiyyət'
+    icon: '📦',
+    title: 'Anbar İşçisi',
+    type: 'Tam Ştat',
+    salary: '500 – 700 AZN',
+    schedule: 'Həftə içi, 09:00–18:00',
+    requirements: 'Fiziki hazırlıq, sürücülük vəsiqəsi (üstünlük)',
+    desc: 'Anbar sahəsinin idarə edilməsi, mal qəbulu və yerləşdirilməsi üçün işçi axtarırıq.',
+    duties: 'Malların qəbulu, sayılması, etiketlənməsi, anbar sənədlərinin tutulması'
   },
   {
     id: 'v3',
-    icon: '👩‍💼',
-    title: 'Kassir / Operator',
+    icon: '💼',
+    title: 'Satış Meneceri',
     type: 'Tam Ştat',
-    salary: '600 – 900 AZN',
-    schedule: 'Dəyişən növbə',
-    requirements: 'Kompüter savadlılığı, ünsiyyət bacarığı, 18+ yaş',
-    desc: 'Müştəri xidmətləri üzrə kassir/operator axtarırıq. Qulaqardına vurmamaq, gülərüz olmaq vacibdir.',
-    duties: 'Sifarişlərin qəbulu, ödəniş əməliyyatları, müştəri məmnuniyyəti'
+    salary: '700 – 1200 AZN + bonus',
+    schedule: 'Həftə içi, 09:00–18:00',
+    requirements: 'Satış təcrübəsi (üstünlük), ünsiyyət bacarığı, kompüter savadlılığı',
+    desc: 'Saff Təharət brendi üçün B2B satışlar aparacaq aktiv satış meneceri axtarırıq.',
+    duties: 'Müştəri bazasının genişləndirilməsi, görüşlər, müqavilələr, hesabat'
   },
   {
     id: 'v4',
     icon: '🧹',
-    title: 'Sanitar Texnik',
-    type: 'Tam Ştat',
-    salary: '500 – 650 AZN',
-    schedule: 'Günlük, 09:00–18:00',
-    requirements: 'Gigiyena standartları bilikləri, fiziki hazırlıq',
-    desc: 'Mətbəx və restoran sahəsinin gigiyena standartlarına uyğun saxlanılması üçün işçi axtarırıq.',
-    duties: 'Restoran sahəsinin təmizliyi, sanitariya standartlarına riayət'
+    title: 'Sahə Satış Nümayəndəsi',
+    type: 'Yarım / Tam Ştat',
+    salary: '500 – 800 AZN + faiz',
+    schedule: 'Çevik qrafik',
+    requirements: 'İraadəli, ünsiyyətsevər, yeni müştəri cəlb etmə bacarığı',
+    desc: 'Müştərilərə sahədə məhsulları tanıtmaq və sifariş almaq üçün nümayəndə axtarırıq.',
+    duties: 'Sahədə müştərilərlə görüş, kataloqla məhsul tanıtımı, sifariş qəbulu'
   }
 ];
 
@@ -301,7 +201,6 @@ const vacanciesData = [
 function showPage(pageId) {
   const oldPage = document.getElementById('page-' + currentPage);
   if (oldPage) {
-    // Save scroll position of current page
     PAGE_SCROLL_MAP[currentPage] = window.scrollY;
     oldPage.classList.remove('active');
   }
@@ -312,20 +211,22 @@ function showPage(pageId) {
   if (!newPage) return;
   newPage.classList.add('active');
 
-  // Update nav active state
   document.querySelectorAll('.nav-link').forEach(link => {
     link.classList.toggle('active', link.dataset.page === pageId);
   });
 
-  // Restore scroll position for the new page
   const savedScroll = PAGE_SCROLL_MAP[pageId] || 0;
   window.scrollTo({ top: savedScroll, behavior: 'instant' });
 }
 
 function goBack() {
-  // Save current scroll
   PAGE_SCROLL_MAP[currentPage] = window.scrollY;
   showPage('home');
+}
+
+function goToProductsWithFilter(filter) {
+  showPage('products');
+  filterProducts(filter);
 }
 
 // ─── MOBILE MENU ───────────────────────────────
@@ -338,185 +239,105 @@ function toggleMenu() {
   document.body.style.overflow = isOpen ? '' : 'hidden';
 }
 
-// ─── CART ─────────────────────────────────────
+// ─── PRODUCT FILTERING ─────────────────────────
 
-function toggleCart() {
-  const panel = document.getElementById('cartPanel');
-  const backdrop = document.getElementById('cartBackdrop');
-  const isOpen = panel.classList.contains('open');
-  panel.classList.toggle('open', !isOpen);
-  backdrop.classList.toggle('visible', !isOpen);
-  document.body.style.overflow = isOpen ? '' : 'hidden';
+function filterProducts(filter) {
+  activeFilter = filter;
+
+  // Update tab active state
+  document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.classList.toggle('active', tab.dataset.filter === filter);
+  });
+
+  renderProducts();
 }
 
-function addToCart(productId) {
-  const product = findProduct(productId);
-  if (!product) return;
+// ─── PRODUCTS RENDERING ────────────────────────
 
-  const existing = cart.find(item => item.id === productId);
-  if (existing) {
-    existing.qty++;
-  } else {
-    cart.push({ ...product, qty: 1 });
+function renderProducts() {
+  const grid = document.getElementById('productGrid');
+  if (!grid) return;
+
+  const filtered = activeFilter === 'all'
+    ? productsData
+    : productsData.filter(p => p.category === activeFilter);
+
+  grid.innerHTML = '';
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:48px 20px;color:#9ca3af;">
+      <div style="font-size:48px;margin-bottom:16px;">🔍</div>
+      <p style="font-size:16px;font-weight:600;">Bu kateqoriyada məhsul tapılmadı</p>
+    </div>`;
+    return;
   }
-  renderCart();
-  bumpCartCount();
-  showToast(`${product.name} səbətə əlavə edildi!`);
-}
 
-function addToCartFromModal() {
-  if (!currentModalProduct) return;
-  addToCart(currentModalProduct.id);
-  closeProductModalBtn();
-}
+  filtered.forEach(product => {
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('aria-label', product.name);
 
-function findProduct(id) {
-  for (const cat of Object.values(menuData)) {
-    const found = cat.find(p => p.id === id);
-    if (found) return found;
-  }
-  return null;
-}
+    const badgeHtml = product.badge
+      ? `<div class="product-card-badge">${escHtml(product.badge)}</div>`
+      : '';
 
-function removeFromCart(productId) {
-  cart = cart.filter(item => item.id !== productId);
-  renderCart();
-}
-
-function changeQty(productId, delta) {
-  const item = cart.find(i => i.id === productId);
-  if (!item) return;
-  item.qty += delta;
-  if (item.qty <= 0) removeFromCart(productId);
-  else renderCart();
-}
-
-function renderCart() {
-  const itemsEl = document.getElementById('cartItems');
-  const emptyEl = document.getElementById('cartEmpty');
-  const footerEl = document.getElementById('cartFooter');
-  const countEl = document.getElementById('cartCount');
-  const totalEl = document.getElementById('cartTotal');
-
-  const totalItems = cart.reduce((sum, i) => sum + i.qty, 0);
-  const totalPrice = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
-
-  countEl.textContent = totalItems;
-  totalEl.textContent = totalPrice + ' AZN';
-
-  const isEmpty = cart.length === 0;
-  emptyEl.style.display = isEmpty ? 'flex' : 'none';
-  footerEl.style.display = isEmpty ? 'none' : 'block';
-
-  // Remove old items (not the empty notice)
-  const existingItems = itemsEl.querySelectorAll('.cart-item');
-  existingItems.forEach(el => el.remove());
-
-  cart.forEach(item => {
-    const div = document.createElement('div');
-    div.className = 'cart-item';
-    div.innerHTML = `
-      <img class="cart-item-img" src="${item.img}" alt="${escHtml(item.name)}" loading="lazy" onerror="this.src='images/menu-hero.jpg'" />
-      <div class="cart-item-info">
-        <div class="cart-item-name">${escHtml(item.name)}</div>
-        <div class="cart-item-price">${item.price * item.qty} AZN</div>
+    card.innerHTML = `
+      <div class="product-card-img">
+        ${badgeHtml}
+        <div class="product-card-cat">${escHtml(product.categoryLabel)}</div>
+        <img src="${product.img}" alt="${escHtml(product.name)}" loading="lazy"
+          onerror="this.src='images/logo.png';this.style.objectFit='contain';this.style.padding='20px'" />
       </div>
-      <div class="cart-item-controls">
-        <button class="qty-btn" onclick="changeQty('${item.id}',-1)" aria-label="Azalt">−</button>
-        <span class="qty-num">${item.qty}</span>
-        <button class="qty-btn" onclick="changeQty('${item.id}',1)" aria-label="Artır">+</button>
+      <div class="product-card-body">
+        <div class="product-card-name">${escHtml(product.name)}</div>
+        <div class="product-card-desc">${escHtml(product.desc)}</div>
+        <div class="product-card-footer">
+          <button class="product-detail-btn" onclick="event.stopPropagation();openProductModal(productsData.find(p=>p.id==='${product.id}'))">Ətraflı</button>
+          <button class="product-wa-btn" onclick="event.stopPropagation();orderProductWA('${product.id}')" aria-label="WhatsApp ilə sifariş et" title="WhatsApp ilə sifariş et">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          </button>
+        </div>
       </div>
     `;
-    itemsEl.insertBefore(div, emptyEl);
+
+    card.addEventListener('click', () => openProductModal(product));
+    card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') openProductModal(product); });
+    grid.appendChild(card);
   });
 }
 
-function bumpCartCount() {
-  const el = document.getElementById('cartCount');
-  el.classList.remove('bump');
-  void el.offsetWidth; // reflow
-  el.classList.add('bump');
-  setTimeout(() => el.classList.remove('bump'), 300);
+function orderProductWA(productId) {
+  const product = productsData.find(p => p.id === productId);
+  if (!product) return;
+  const msg = `🛒 *Sifariş — Saff Təharət*\n\n📦 *Məhsul:* ${product.name}\n📂 *Kateqoriya:* ${product.categoryLabel}\n\nSalam! Bu məhsulu sifariş etmək istəyirəm. Zəhmət olmasa məlumat verin.`;
+  window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
 }
 
-function sendOrder() {
-  if (cart.length === 0) return;
-
-  let msg = '🍱 *YENİ SİFARİŞ — Sushi Katana*\n\n';
-  msg += '━━━━━━━━━━━━━━━━━━━━\n';
-  cart.forEach((item, idx) => {
-    msg += `${idx + 1}. ${item.name}\n   ${item.qty} × ${item.price} AZN = ${item.qty * item.price} AZN\n`;
-  });
-  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
-  msg += '━━━━━━━━━━━━━━━━━━━━\n';
-  msg += `💰 *CƏMİ: ${total} AZN*\n\n`;
-  msg += '📍 Çatdırılma ünvanınızı yazın.';
-
-  const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
-  window.open(url, '_blank', 'noopener,noreferrer');
-}
-
-// ─── MENU RENDERING ───────────────────────────
-
-function renderMenuGrids() {
-  Object.entries(menuData).forEach(([cat, items]) => {
-    const grid = document.getElementById('grid-' + cat);
-    if (!grid) return;
-    grid.innerHTML = '';
-    items.forEach(item => {
-      const card = document.createElement('div');
-      card.className = 'menu-card';
-      card.setAttribute('role', 'button');
-      card.setAttribute('tabindex', '0');
-      card.setAttribute('aria-label', item.name);
-
-      const badgeHtml = item.badge
-        ? `<div style="position:absolute;top:10px;left:10px;background:var(--accent);color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px;z-index:1;">${escHtml(item.badge)}</div>`
-        : '';
-
-      card.innerHTML = `
-        <div class="menu-card-img">
-          ${badgeHtml}
-          <img src="${item.img}" alt="${escHtml(item.name)}" loading="lazy" onerror="this.src='images/menu-hero.jpg'" />
-        </div>
-        <div class="menu-card-body">
-          <div class="menu-card-name">${escHtml(item.name)}</div>
-          <div class="menu-card-desc">${escHtml(item.desc)}</div>
-          <div class="menu-card-footer">
-            <span class="menu-card-price">${item.price} AZN</span>
-            <button class="add-btn" onclick="event.stopPropagation();addToCart('${item.id}')" aria-label="Səbətə əlavə et">+</button>
-          </div>
-        </div>
-      `;
-
-      card.addEventListener('click', () => openProductModal(item));
-      card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') openProductModal(item); });
-      grid.appendChild(card);
-    });
-  });
-}
-
-function switchTab(tabId) {
-  document.querySelectorAll('.menu-tab').forEach(t => {
-    t.classList.toggle('active', t.dataset.tab === tabId);
-  });
-  document.querySelectorAll('.menu-section').forEach(s => {
-    s.classList.toggle('active', s.id === 'tab-' + tabId);
-  });
-}
-
-// ─── PRODUCT MODAL ────────────────────────────
+// ─── PRODUCT MODAL ─────────────────────────────
 
 function openProductModal(product) {
   currentModalProduct = product;
   document.getElementById('modalImg').src = product.img;
   document.getElementById('modalImg').alt = product.name;
+  document.getElementById('modalImg').onerror = function() {
+    this.src = 'images/logo.png';
+    this.style.objectFit = 'contain';
+    this.style.padding = '30px';
+  };
   document.getElementById('modalName').textContent = product.name;
   document.getElementById('modalDesc').textContent = product.desc;
-  document.getElementById('modalPrice').textContent = product.price + ' AZN';
-  document.getElementById('modalWeight').textContent = product.weight;
+  document.getElementById('modalCategoryTag').textContent = product.categoryLabel;
   document.getElementById('productModal').classList.add('open');
   document.body.style.overflow = 'hidden';
+}
+
+function contactForProduct() {
+  if (!currentModalProduct) return;
+  const p = currentModalProduct;
+  const msg = `🛒 *Sifariş — Saff Təharət*\n\n📦 *Məhsul:* ${p.name}\n📂 *Kateqoriya:* ${p.categoryLabel}\n\nSalam! Bu məhsulu sifariş etmək istəyirəm. Zəhmət olmasa məlumat verin.`;
+  window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
 }
 
 function closeProductModal(e) {
@@ -528,38 +349,12 @@ function closeProductModalBtn() {
   document.body.style.overflow = '';
 }
 
-// ─── FAQ RENDERING ────────────────────────────
-
-function renderFaq() {
-  const list = document.getElementById('faqList');
-  faqData.forEach((item, i) => {
-    const el = document.createElement('div');
-    el.className = 'faq-item';
-    el.innerHTML = `
-      <div class="faq-q" onclick="toggleFaq(this)">
-        <span>${escHtml(item.q)}</span>
-        <span class="faq-icon">+</span>
-      </div>
-      <div class="faq-a">
-        <div class="faq-a-inner">${escHtml(item.a)}</div>
-      </div>
-    `;
-    list.appendChild(el);
-  });
-}
-
-function toggleFaq(btn) {
-  const item = btn.closest('.faq-item');
-  const isOpen = item.classList.contains('open');
-  // Close all
-  document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
-  if (!isOpen) item.classList.add('open');
-}
-
-// ─── VACANCIES RENDERING ──────────────────────
+// ─── VACANCIES RENDERING ───────────────────────
 
 function renderVacancies() {
   const grid = document.getElementById('vacancyGrid');
+  if (!grid) return;
+
   vacanciesData.forEach(v => {
     const card = document.createElement('div');
     card.className = 'vacancy-card';
@@ -580,7 +375,7 @@ function renderVacancies() {
   });
 }
 
-// ─── VACANCY MODAL ────────────────────────────
+// ─── VACANCY MODAL ─────────────────────────────
 
 function openVacancyModal(v) {
   currentVacancy = v;
@@ -611,56 +406,11 @@ function closeVacancyModalBtn() {
 
 function applyVacancy() {
   if (!currentVacancy) return;
-  const msg = `👋 *Vakansiyaya Müraciət — Sushi Katana*\n\n🔹 *Vəzifə:* ${currentVacancy.title}\n🔹 *İş rejimi:* ${currentVacancy.type}\n\nSalam! Bu vakansiya ilə maraqlanıram. Əlaqə saxlamaq istəyirəm.`;
+  const msg = `👋 *Vakansiyaya Müraciət — Saff Təharət*\n\n🔹 *Vəzifə:* ${currentVacancy.title}\n🔹 *İş rejimi:* ${currentVacancy.type}\n\nSalam! Bu vakansiya ilə maraqlanıram. Əlaqə saxlamaq istəyirəm.`;
   window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
 }
 
-// ─── RESERVATION ─────────────────────────────
-
-function submitReservation(e) {
-  e.preventDefault();
-  const name    = document.getElementById('resName').value.trim();
-  const phone   = document.getElementById('resPhone').value.trim();
-  const date    = document.getElementById('resDate').value;
-  const time    = document.getElementById('resTime').value;
-  const guests  = document.getElementById('resGuests').value;
-  const note    = document.getElementById('resNote').value.trim();
-
-  if (!name || !phone || !date || !time || !guests) {
-    showToast('Zəhmət olmasa bütün məcburi xanaları doldurun!');
-    return;
-  }
-
-  const formattedDate = formatDate(date);
-  let msg = `📅 *REZERVASIYA — Sushi Katana*\n\n`;
-  msg += `━━━━━━━━━━━━━━━━━━━━\n`;
-  msg += `👤 *Ad, Soyad:* ${name}\n`;
-  msg += `📞 *Telefon:* ${phone}\n`;
-  msg += `📅 *Tarix:* ${formattedDate}\n`;
-  msg += `⏰ *Saat:* ${time}\n`;
-  msg += `👥 *Nəfər sayı:* ${guests}\n`;
-  if (note) msg += `📝 *Qeyd:* ${note}\n`;
-  msg += `━━━━━━━━━━━━━━━━━━━━`;
-
-  window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
-}
-
-// ─── GALLERY LIGHTBOX ─────────────────────────
-
-function openLightbox(img) {
-  const lb = document.getElementById('lightbox');
-  document.getElementById('lightboxImg').src = img.src;
-  document.getElementById('lightboxImg').alt = img.alt;
-  lb.classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeLightbox() {
-  document.getElementById('lightbox').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-// ─── TOAST ────────────────────────────────────
+// ─── TOAST ─────────────────────────────────────
 
 function showToast(msg) {
   let toast = document.querySelector('.toast');
@@ -674,7 +424,7 @@ function showToast(msg) {
   setTimeout(() => toast.classList.remove('show'), 2800);
 }
 
-// ─── UTILS ────────────────────────────────────
+// ─── UTILS ─────────────────────────────────────
 
 function escHtml(str) {
   return String(str)
@@ -684,16 +434,7 @@ function escHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
-function formatDate(dateStr) {
-  try {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString('az-AZ', { day: '2-digit', month: 'long', year: 'numeric' });
-  } catch {
-    return dateStr;
-  }
-}
-
-// ─── KEYBOARD ACCESSIBILITY ───────────────────
+// ─── KEYBOARD ACCESSIBILITY ────────────────────
 
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
@@ -701,26 +442,15 @@ document.addEventListener('keydown', function(e) {
       closeProductModalBtn();
     } else if (document.getElementById('vacancyModal').classList.contains('open')) {
       closeVacancyModalBtn();
-    } else if (document.getElementById('lightbox').classList.contains('open')) {
-      closeLightbox();
-    } else if (document.getElementById('cartPanel').classList.contains('open')) {
-      toggleCart();
     } else if (document.getElementById('mobileMenu').classList.contains('open')) {
       toggleMenu();
     }
   }
 });
 
-// ─── INIT ─────────────────────────────────────
+// ─── INIT ──────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', function() {
-  renderMenuGrids();
-  renderFaq();
+  renderProducts();
   renderVacancies();
-  renderCart();
-
-  // Set min date for reservation to today
-  const today = new Date().toISOString().split('T')[0];
-  const resDate = document.getElementById('resDate');
-  if (resDate) resDate.min = today;
 });
