@@ -87,11 +87,12 @@ ul { list-style: none; }
 
 .logo-img {
   width: auto;
-  height: 44px;
-  max-width: 140px;
+  height: 48px;
+  max-width: 160px;
   border-radius: 0;
   object-fit: contain;
   border: none;
+  background: transparent;
 }
 
 .logo-text {
@@ -174,10 +175,11 @@ ul { list-style: none; }
 }
 .mobile-logo img {
   width: auto;
-  height: 38px;
-  max-width: 120px;
+  height: 42px;
+  max-width: 140px;
   border-radius: 0;
   object-fit: contain;
+  background: transparent;
 }
 .mobile-logo span {
   display: none;
@@ -375,14 +377,15 @@ ul { list-style: none; }
 
 .hero-logo {
   width: auto;
-  height: 120px;
-  max-width: 300px;
+  height: 130px;
+  max-width: 340px;
   border-radius: 0;
   object-fit: contain;
   margin: 0 auto;
   border: none;
   box-shadow: none;
-  filter: brightness(0) invert(1) drop-shadow(0 4px 20px rgba(0,0,0,0.5));
+  filter: drop-shadow(0 4px 20px rgba(0,0,0,0.35));
+  background: transparent;
 }
 
 .hero-title {
@@ -599,12 +602,14 @@ ul { list-style: none; }
 }
 .contact-page-logo {
   width: auto;
-  height: 90px;
-  max-width: 220px;
+  height: 100px;
+  max-width: 260px;
   border-radius: 0;
   object-fit: contain;
   margin: 0 auto 16px;
   border: none;
+  background: transparent;
+  display: block;
 }
 .contact-page-header h2 {
   font-size: 24px;
@@ -1242,7 +1247,7 @@ ul { list-style: none; }
    RESPONSIVE
    ============================================= */
 @media (max-width: 900px) {
-  .logo-img { height: 38px; }
+  .logo-img { height: 42px; max-width: 150px; }
 }
 
 @media (max-width: 768px) {
@@ -1250,7 +1255,7 @@ ul { list-style: none; }
   .burger { display: flex; }
 
   .hero { min-height: 75vh; }
-  .hero-logo { height: 80px; width: auto; }
+  .hero-logo { height: 90px; width: auto; max-width: 280px; }
   .hero-btns { flex-direction: column; align-items: center; }
   .btn-primary, .btn-secondary { width: 100%; max-width: 280px; }
 
@@ -1284,11 +1289,11 @@ ul { list-style: none; }
 @media (max-width: 480px) {
   :root { --nav-height: 58px; }
   .header-inner { padding: 0 14px; }
-  .logo-img { height: 34px; }
+  .logo-img { height: 36px; max-width: 130px; }
 
   .hero { min-height: 70vh; }
   .hero-content { padding: 32px 16px; }
-  .hero-logo { height: 70px; width: auto; }
+  .hero-logo { height: 80px; width: auto; max-width: 240px; }
 
   .feature-item { padding: 6px 10px; }
   .feature-label { font-size: 11px; }
