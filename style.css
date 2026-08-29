@@ -86,19 +86,16 @@ ul { list-style: none; }
 }
 
 .logo-img {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--green-xlight);
+  width: auto;
+  height: 44px;
+  max-width: 140px;
+  border-radius: 0;
+  object-fit: contain;
+  border: none;
 }
 
 .logo-text {
-  font-size: 16px;
-  font-weight: 800;
-  color: var(--green);
-  letter-spacing: -0.3px;
-  white-space: nowrap;
+  display: none;
 }
 
 .nav-links {
@@ -176,15 +173,14 @@ ul { list-style: none; }
   margin-bottom: 12px;
 }
 .mobile-logo img {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  object-fit: cover;
+  width: auto;
+  height: 38px;
+  max-width: 120px;
+  border-radius: 0;
+  object-fit: contain;
 }
 .mobile-logo span {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--green);
+  display: none;
 }
 
 .mobile-menu a {
@@ -372,17 +368,21 @@ ul { list-style: none; }
 }
 
 .hero-logo-wrap {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: center;
 }
 
 .hero-logo {
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  object-fit: cover;
+  width: auto;
+  height: 120px;
+  max-width: 300px;
+  border-radius: 0;
+  object-fit: contain;
   margin: 0 auto;
-  border: 3px solid rgba(255,255,255,0.35);
-  box-shadow: 0 0 30px rgba(40,167,69,0.4);
+  border: none;
+  box-shadow: none;
+  filter: brightness(0) invert(1) drop-shadow(0 4px 20px rgba(0,0,0,0.5));
 }
 
 .hero-title {
@@ -598,12 +598,13 @@ ul { list-style: none; }
   margin-bottom: 36px;
 }
 .contact-page-logo {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  object-fit: cover;
+  width: auto;
+  height: 90px;
+  max-width: 220px;
+  border-radius: 0;
+  object-fit: contain;
   margin: 0 auto 16px;
-  border: 3px solid var(--green-xlight);
+  border: none;
 }
 .contact-page-header h2 {
   font-size: 24px;
@@ -1241,7 +1242,7 @@ ul { list-style: none; }
    RESPONSIVE
    ============================================= */
 @media (max-width: 900px) {
-  .logo-text { font-size: 14px; }
+  .logo-img { height: 38px; }
 }
 
 @media (max-width: 768px) {
@@ -1249,7 +1250,7 @@ ul { list-style: none; }
   .burger { display: flex; }
 
   .hero { min-height: 75vh; }
-  .hero-logo { width: 72px; height: 72px; }
+  .hero-logo { height: 80px; width: auto; }
   .hero-btns { flex-direction: column; align-items: center; }
   .btn-primary, .btn-secondary { width: 100%; max-width: 280px; }
 
@@ -1283,11 +1284,11 @@ ul { list-style: none; }
 @media (max-width: 480px) {
   :root { --nav-height: 58px; }
   .header-inner { padding: 0 14px; }
-  .logo-text { font-size: 13px; }
+  .logo-img { height: 34px; }
 
   .hero { min-height: 70vh; }
   .hero-content { padding: 32px 16px; }
-  .hero-logo { width: 64px; height: 64px; }
+  .hero-logo { height: 70px; width: auto; }
 
   .feature-item { padding: 6px 10px; }
   .feature-label { font-size: 11px; }

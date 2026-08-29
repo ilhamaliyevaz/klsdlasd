@@ -352,8 +352,18 @@ function addToCart(productId) {
   }
 
   updateCartBadge();
-  renderProducts(); // refresh to update cart button state
+  updateCartButtonState(productId); // Only update the specific button, no full re-render
   showToast(`"${product.name}" səbətə əlavə edildi 🛒`);
+}
+
+function updateCartButtonState(productId) {
+  const btn = document.getElementById('cart-btn-' + productId);
+  if (!btn) return;
+  const inCart = cart.some(c => c.id === productId);
+  btn.classList.toggle('in-cart', inCart);
+  btn.innerHTML = inCart
+    ? `<svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`
+    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="16" height="16"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>`;
 }
 
 function addToCartFromModal() {
@@ -367,7 +377,7 @@ function removeFromCart(productId) {
   cart = cart.filter(c => c.id !== productId);
   updateCartBadge();
   renderCartSidebar();
-  renderProducts();
+  updateCartButtonState(productId); // Only update the specific button
 }
 
 function changeQty(productId, delta) {
