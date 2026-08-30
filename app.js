@@ -637,8 +637,16 @@ document.addEventListener('keydown', function(e) {
 
 // ─── INIT ──────────────────────────────────────
 
-document.addEventListener('DOMContentLoaded', function() {
+(function init() {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', _boot);
+  } else {
+    _boot();
+  }
+})();
+
+function _boot() {
   renderProducts();
   renderVacancies();
   updateCartBadge();
-});
+}

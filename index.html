@@ -6,9 +6,12 @@
   <meta name="description" content="Saff Təharət — Bakıda professional təmizlik məhsulları. Yüksək keyfiyyət, sürətli çatdırılma." />
   <title>Saff Təharət — Təmizlik Mənbəyi</title>
   <link rel="icon" type="image/png" href="images/logo.png" />
+  <!-- Performans: resurs ipucları -->
+  <link rel="preload" href="style.css" as="style" />
+  <link rel="preload" href="app.js" as="script" />
+  <link rel="preload" href="images/logo.png" as="image" />
+  <link rel="preload" href="images/hero.jpg" as="image" />
   <link rel="stylesheet" href="style.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 </head>
 <body>
 
@@ -16,7 +19,7 @@
 <header class="header" id="header">
   <div class="header-inner">
     <div class="logo-wrap" onclick="showPage('home')">
-      <img src="images/logo.png" alt="Saff Təharət Logo" class="logo-img" />
+      <img src="images/logo.png" alt="Saff Təharət Logo" class="logo-img" loading="eager" />
     </div>
     <nav class="nav-links" id="navLinks">
       <a href="#" onclick="showPage('home');return false;" class="nav-link active" data-page="home">Ana Səhifə</a>
@@ -61,7 +64,7 @@
     <!-- Hero Banner -->
     <div class="hero" id="home-hero">
       <div class="hero-img-wrap">
-        <img src="images/hero.jpg" alt="Saff Təharət Məhsulları" class="hero-bg-img" />
+        <img src="images/hero.jpg" alt="Saff Təharət Məhsulları" class="hero-bg-img" loading="eager" fetchpriority="high" />
         <div class="hero-overlay"></div>
       </div>
       <div class="hero-content">
@@ -348,6 +351,6 @@
   </div>
 </div>
 
-<script src="app.js"></script>
+<script src="app.js" defer></script>
 </body>
 </html>
